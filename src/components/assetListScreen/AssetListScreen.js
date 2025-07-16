@@ -183,7 +183,7 @@ function AssetListScreen({ setScreen }) {
             });
     };
 
-    // --- 廃棄ダイアログ用関数 ---
+    // --- 廃棄関連の関数 ---
     const handleDisposeOpen = (asset) => {
         setSelectedAsset(asset);
         setDisposalInfo({
@@ -353,7 +353,7 @@ function AssetListScreen({ setScreen }) {
                 </Stack>
             </Card>
 
-            {/* 編集モーダル */}
+            {/* 編集ダイアログ */}
             <Dialog open={editOpen} onClose={handleEditClose} fullWidth maxWidth="xs">
                 <DialogTitle>
                     {isDisposedEditLock
@@ -441,7 +441,7 @@ function AssetListScreen({ setScreen }) {
                 </DialogActions>
             </Dialog>
 
-            {/* 貸出モーダルを追加 */}
+            {/* 貸出ダイアログ */}
             <Dialog open={lendOpen} onClose={handleLendClose} fullWidth maxWidth="xs">
                 <DialogTitle>備品を貸出</DialogTitle>
                 <DialogContent sx={{ pt: '10px !important' }}>
