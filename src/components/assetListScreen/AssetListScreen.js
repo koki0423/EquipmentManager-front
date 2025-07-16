@@ -17,7 +17,13 @@ function AssetListScreen({ setScreen }) {
     const [lendOpen, setLendOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState(null);
     const [lendingInfo, setLendingInfo] = useState({ owner: '', rental_end_date: '' });
-
+    const [disposeOpen, setDisposeOpen] = useState(false);
+    const [disposalInfo, setDisposalInfo] = useState({
+        reason: '',
+        processed_by: '',
+        quantity: 1,
+        is_individual: false
+    });
     const [statusFilter, setStatusFilter] = useState('');
 
     const statusList = [
@@ -177,6 +183,48 @@ function AssetListScreen({ setScreen }) {
             });
     };
 
+    // --- 廃棄ダイアログ用関数 ---
+    const handleDisposeOpen = (asset) => {
+        setSelectedAsset(asset);
+        setDisposalInfo({
+            reason: '',
+            processed_by: '',
+            quantity: asset.serial_number ? 1 : (asset.quantity > 0 ? 1 : 0),
+            is_individual: !!asset.serial_number
+        });
+        setDisposeOpen(true);
+    };
+
+    const handleDisposeClose = () => {
+        setDisposeOpen(false);
+        setSelectedAsset(null);
+    };
+
+    const handleDisposeConfirm = async () => {
+        if (!selectedAsset) return;
+        const disposalData = {
+            asset_id: selectedAsset.id,
+            reason: disposalInfo.reason || '', // 廃棄理由
+            processed_by: disposalInfo.processed_by || '', // 処理者の学籍番号
+            quantity: disposalInfo.quantity || 1, // 廃棄する数量
+            is_individual: disposalInfo.is_individual // 個別管理かどうか
+        };
+
+        const url = `${API_BASE_URL}/api/v1/disposal/${selectedAsset.id}`;
+        axios.post(url, disposalData)
+            .then(() => {
+                alert(`${selectedAsset.name} を ${disposalData.borrower} を廃棄登録しました。`);
+                handleLendClose();
+                fetchData();
+            })
+            .catch(err => {
+                console.error('廃棄処理エラー:', err);
+                const errMsg = err.response?.data?.error || '廃棄処理中にエラーが発生しました。';
+                alert(errMsg);
+            });
+    };
+
+
     const filteredAssets = assets.filter(asset => {
         // フィルターが空文字 '' の場合、無条件ですべて表示する
         if (statusFilter === '') {
@@ -185,6 +233,9 @@ function AssetListScreen({ setScreen }) {
         // フィルターが設定されている場合、そのstatus_idを持つものだけ表示
         return asset.status_id === statusFilter;
     });
+
+    const isDisposedEditLock =
+        statusFilter === 5 || (selectedAsset && Number(selectedAsset.status_id) === 5);
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100dvh', bgcolor: '#f6f8fb' }}>
@@ -235,14 +286,13 @@ function AssetListScreen({ setScreen }) {
                             <TableBody>
                                 {filteredAssets.map((asset) => {
                                     // 貸出ボタンの表示ロジック
-                                    const isLendableStatus = asset.status_id === 1; // ステータスが「正常」か
+                                    const isLendableStatus = asset.status_id === 1;
                                     let isDisabled = false;
                                     let buttonText = '';
+                                    //console.log('asset:', asset);
 
                                     if (!isLendableStatus) {
-                                        // 正常ではない場合、ボタンは常に無効
                                         isDisabled = true;
-                                        // 現在のステータス名を探してボタンのテキストに設定
                                         const currentStatus = statusList.find(s => s.id === asset.status_id);
                                         buttonText = currentStatus ? currentStatus.name : '貸出不可';
                                     } else if (asset.serial_number) {
@@ -266,14 +316,26 @@ function AssetListScreen({ setScreen }) {
                                             <TableCell align="center">
                                                 <Stack direction="row" spacing={1} justifyContent="center">
                                                     <Button variant="outlined" size="small" onClick={() => handleEditOpen(asset)}>編集</Button>
-                                                    <Button
-                                                        variant="contained"
-                                                        size="small"
-                                                        disabled={isDisabled}
-                                                        onClick={() => handleLendOpen(asset)}
-                                                    >
-                                                        {buttonText}
-                                                    </Button>
+                                                    {statusFilter === '' && (
+                                                        <>
+                                                            <Button
+                                                                variant="contained"
+                                                                size="small"
+                                                                disabled={isDisabled}
+                                                                onClick={() => handleLendOpen(asset)}
+                                                            >
+                                                                {buttonText}
+                                                            </Button>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="error"
+                                                                disabled={asset.status_id === 5}
+                                                                onClick={() => handleDisposeOpen(asset)}
+                                                            >
+                                                                廃棄
+                                                            </Button>
+                                                        </>
+                                                    )}
                                                 </Stack>
                                             </TableCell>
                                         </TableRow>
@@ -293,7 +355,11 @@ function AssetListScreen({ setScreen }) {
 
             {/* 編集モーダル */}
             <Dialog open={editOpen} onClose={handleEditClose} fullWidth maxWidth="xs">
-                <DialogTitle>個別資産の編集</DialogTitle>
+                <DialogTitle>
+                    {isDisposedEditLock
+                        ? '個別資産の編集（備考のみ変更可）'
+                        : '個別資産の編集'}
+                </DialogTitle>
                 <DialogContent sx={{ pt: '10px !important' }}>
                     <Typography variant="subtitle1" gutterBottom>
                         {selectedAsset?.name} ({selectedAsset?.model_number})
@@ -316,17 +382,20 @@ function AssetListScreen({ setScreen }) {
                         }}
                     />
 
-                    <FormControl fullWidth margin="dense">
+                    <FormControl fullWidth margin="dense" disabled={isDisposedEditLock}>
                         <InputLabel id="status-select-label">状態</InputLabel>
                         <Select
                             labelId="status-select-label"
                             label="状態"
                             // valueには選択されているstatus_idを指定
                             value={selectedAsset?.status_id || ''}
-                            // onChangeでstatus_idを更新する
-                            onChange={(e) => handleChange('status_id', e.target.value)}
+                            // 廃棄済みロック時は変更不可
+                            onChange={(e) => {
+                                if (!isDisposedEditLock) {
+                                    handleChange('status_id', e.target.value);
+                                }
+                            }}
                         >
-                            {/* statusListをループして選択肢（MenuItem）を生成 */}
                             {statusList.map((status) => (
                                 <MenuItem key={status.id} value={status.id}>
                                     {status.name}
@@ -340,17 +409,19 @@ function AssetListScreen({ setScreen }) {
                         value={selectedAsset?.location || ''}
                         onChange={(e) => handleChange('location', e.target.value)}
                         fullWidth margin="dense"
+                        disabled={isDisposedEditLock}
                     />
                     <TextField
                         label="使用者"
                         value={selectedAsset?.owner || ''}
                         onChange={(e) => handleChange('owner', e.target.value)}
                         fullWidth margin="dense"
+                        disabled={isDisposedEditLock}
                     />
                     <TextField
                         label="個数(追加の場合は&quot;既存＋追加数&quot;)"
                         value={selectedAsset?.quantity || ''}
-                        disabled={!!selectedAsset?.serial_number}
+                        disabled={isDisposedEditLock || !!selectedAsset?.serial_number}
                         onChange={(e) => handleChange('quantity', e.target.value)}
                         fullWidth margin="dense"
                     />
@@ -432,7 +503,63 @@ function AssetListScreen({ setScreen }) {
                     <Button variant="contained" onClick={handleLendConfirm}>貸出実行</Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+
+            {/* 廃棄登録ダイアログ */}
+            <Dialog open={disposeOpen} onClose={handleDisposeClose} fullWidth maxWidth="xs">
+                <DialogTitle>廃棄</DialogTitle>
+                <DialogContent sx={{ pt: '10px !important' }}>
+                    <Typography variant="subtitle1" gutterBottom>
+                        {selectedAsset?.name} ({selectedAsset?.model_number})
+                    </Typography>
+                    <TextField
+                        label="シリアル番号 (編集不可)"
+                        value={selectedAsset?.serial_number || ''}
+                        fullWidth margin="dense"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        label="購入日 (編集不可)"
+                        value={selectedAsset?.purchase_date ? format(new Date(selectedAsset.purchase_date), 'yyyy-MM-dd') : '－'}
+                        fullWidth
+                        margin="dense"
+                        InputProps={{
+                            readOnly: true,
+                        }}
+                    />
+                    <TextField
+                        label="廃棄数量"
+                        required
+                        type="number"
+                        value={disposalInfo.quantity}
+                        onChange={e => setDisposalInfo(info => ({ ...info, quantity: e.target.value }))}
+                        fullWidth margin="dense"
+                        disabled={selectedAsset?.serial_number}
+                    />
+                    <TextField
+                        label="廃棄登録者 (学籍番号)"
+                        required
+                        value={disposalInfo.processed_by}
+                        onChange={e => setDisposalInfo(info => ({ ...info, processed_by: e.target.value }))}
+                        fullWidth margin="dense"
+                    />
+                    <TextField
+                        label="廃棄理由"
+                        required
+                        value={disposalInfo.reason}
+                        onChange={e => setDisposalInfo(info => ({ ...info, reason: e.target.value }))}
+                        multiline rows={3}
+                        fullWidth margin="dense"
+                    />
+
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDisposeClose}>キャンセル</Button>
+                    <Button variant="contained" color="error" onClick={handleDisposeConfirm}>廃棄登録</Button>
+                </DialogActions>
+            </Dialog>
+        </Box >
     );
 }
 
