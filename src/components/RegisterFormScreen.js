@@ -262,7 +262,7 @@ const RegisterFormScreen = ({ formData, setFormData, setInputJson, setScreen }) 
 
           <TextField
             label="備考"
-            name="remarks"
+            name="notes"
             value={formData.notes}
             onChange={handleChange}
             multiline

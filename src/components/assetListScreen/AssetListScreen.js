@@ -206,7 +206,7 @@ function AssetListScreen({ setScreen }) {
             asset_id: selectedAsset.id,
             reason: disposalInfo.reason || '', // 廃棄理由
             processed_by: disposalInfo.processed_by || '', // 処理者の学籍番号
-            quantity: disposalInfo.quantity || 1, // 廃棄する数量
+            quantity: Number(disposalInfo.quantity) || 1, // 廃棄する数量
             is_individual: disposalInfo.is_individual // 個別管理かどうか
         };
 
@@ -214,7 +214,7 @@ function AssetListScreen({ setScreen }) {
         axios.post(url, disposalData)
             .then(() => {
                 alert(`${selectedAsset.name} を ${disposalData.borrower} を廃棄登録しました。`);
-                handleLendClose();
+                handleDisposeClose();
                 fetchData();
             })
             .catch(err => {
@@ -255,17 +255,20 @@ function AssetListScreen({ setScreen }) {
                     >
                         すべて
                     </Button>
-                    {statusList.map((status) => (
-                        <Button
-                            key={status.id}
-                            variant={statusFilter === status.id ? 'contained' : 'outlined'}
-                            onClick={() => setStatusFilter(status.id)}
-                            size="small"
-                        >
-                            {status.name}
-                        </Button>
-                    ))}
+                    {statusList
+                        .filter(status => status.id !== 4)
+                        .map((status) => (
+                            <Button
+                                key={status.id}
+                                variant={statusFilter === status.id ? 'contained' : 'outlined'}
+                                onClick={() => setStatusFilter(status.id)}
+                                size="small"
+                            >
+                                {status.name}
+                            </Button>
+                        ))}
                 </Stack>
+
 
                 {isLoading ? (
                     <Box sx={{ my: 5, display: 'flex', justifyContent: 'center' }}><CircularProgress /></Box>
@@ -368,6 +371,7 @@ function AssetListScreen({ setScreen }) {
                         label="シリアル番号 (編集不可)"
                         value={selectedAsset?.serial_number || ''}
                         fullWidth margin="dense"
+                        disabled
                         InputProps={{
                             readOnly: true,
                         }}
@@ -376,6 +380,7 @@ function AssetListScreen({ setScreen }) {
                         label="購入日 (編集不可)"
                         value={selectedAsset?.purchase_date ? format(new Date(selectedAsset.purchase_date), 'yyyy-MM-dd') : '－'}
                         fullWidth
+                        disabled
                         margin="dense"
                         InputProps={{
                             readOnly: true,
@@ -387,22 +392,27 @@ function AssetListScreen({ setScreen }) {
                         <Select
                             labelId="status-select-label"
                             label="状態"
-                            // valueには選択されているstatus_idを指定
                             value={selectedAsset?.status_id || ''}
-                            // 廃棄済みロック時は変更不可
                             onChange={(e) => {
                                 if (!isDisposedEditLock) {
                                     handleChange('status_id', e.target.value);
                                 }
                             }}
                         >
-                            {statusList.map((status) => (
-                                <MenuItem key={status.id} value={status.id}>
-                                    {status.name}
-                                </MenuItem>
-                            ))}
+                            {statusList.map((status) => {
+                                // 貸出中・廃棄済みは選択不可（現在その状態のときのみ表示）
+                                const isExcluded = status.id === 4 || status.id === 5;
+                                const isCurrent = selectedAsset?.status_id === status.id;
+                                if (isExcluded && !isCurrent) return null;
+                                return (
+                                    <MenuItem key={status.id} value={status.id} disabled={isExcluded}>
+                                        {status.name}
+                                    </MenuItem>
+                                );
+                            })}
                         </Select>
                     </FormControl>
+
 
                     <TextField
                         label="保管場所"
@@ -513,6 +523,7 @@ function AssetListScreen({ setScreen }) {
                     </Typography>
                     <TextField
                         label="シリアル番号 (編集不可)"
+                        disabled
                         value={selectedAsset?.serial_number || ''}
                         fullWidth margin="dense"
                         InputProps={{
@@ -523,6 +534,7 @@ function AssetListScreen({ setScreen }) {
                         label="購入日 (編集不可)"
                         value={selectedAsset?.purchase_date ? format(new Date(selectedAsset.purchase_date), 'yyyy-MM-dd') : '－'}
                         fullWidth
+                        disabled
                         margin="dense"
                         InputProps={{
                             readOnly: true,
