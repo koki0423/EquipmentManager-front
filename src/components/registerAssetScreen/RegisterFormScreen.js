@@ -10,7 +10,7 @@ import {
   Box,
   Autocomplete,
 } from '@mui/material';
-import { SCREENS } from '../constants';
+import { SCREENS } from '../../constants';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 
 const RegisterFormScreen = ({ formData, setFormData, setInputJson, setScreen }) => {
@@ -275,7 +275,7 @@ const RegisterFormScreen = ({ formData, setFormData, setInputJson, setScreen }) 
           <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 2 }}>
             <Button
               variant="outlined"
-              onClick={() => setScreen(SCREENS.TOP)}
+              onClick={() => setScreen(SCREENS.MENU_SCREEN)}
               sx={{
                 borderRadius: 3,
                 px: 4,

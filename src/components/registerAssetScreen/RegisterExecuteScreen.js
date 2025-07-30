@@ -4,10 +4,10 @@ import {
     Button, Typography, Card, CircularProgress, Box, Fade, Stack
 } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
-import { SCREENS } from '../constants';
-import { API_BASE_URL } from '../config';
+import { SCREENS } from '../../constants.js';
+import { API_BASE_URL } from '../../config.js';
 
-import { NFCPortLib, Configuration, DetectionOption } from '../NFCPortLib.js';
+import { NFCPortLib, Configuration, DetectionOption } from '../../NFCPortLib.js';
 import Encoding from 'encoding-japanese';
 import toast from 'react-hot-toast';
 

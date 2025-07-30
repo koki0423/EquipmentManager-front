@@ -8,6 +8,7 @@ export const SCREENS = {
   DELETE_ASSETS: 'DeleteAssetScreen',
   ASSET_LIST: 'asset_list',
   LEND_LIST: 'lend_list',
+  MENU_SCREEN: 'menu_screen',
 };
 
 // 初期フォームデータ

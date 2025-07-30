@@ -9,8 +9,9 @@ import {
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import { format } from 'date-fns';
 import { API_BASE_URL } from '../../config';
+import { SCREENS } from '../../constants';
 
-function AssetListScreen({ setScreen }) {
+function AssetListScreen({ setScreen, authInfo }) {
     const [assets, setAssets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [editOpen, setEditOpen] = useState(false);
@@ -350,7 +351,7 @@ function AssetListScreen({ setScreen }) {
                 )}
 
                 <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-                    <Button variant="outlined" onClick={() => setScreen('TOP')} sx={{ borderRadius: 3, px: 4, fontWeight: 600 }}>
+                    <Button variant="outlined" onClick={() => setScreen(SCREENS.MENU_SCREEN)} sx={{ borderRadius: 3, px: 4, fontWeight: 600 }}>
                         戻る
                     </Button>
                 </Stack>
