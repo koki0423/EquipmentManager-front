@@ -52,7 +52,6 @@ export const useNfcReader = (isScanning, setIsScanning) => {
                 }
             } catch (err) {
                 if (!isMounted) return;
-                console.error(`リトライ ${retryCounter + 1}回目:`, err);
                 if (retryCounter >= 9) {
                     toast.error('カードを読み取れませんでした。');
                     setError('読み取りに失敗しました。');
