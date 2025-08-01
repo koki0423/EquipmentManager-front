@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
     Typography, Card, CircularProgress, Box
 } from '@mui/material';
-import { SCREENS } from '../../constants';
-import { API_BASE_URL } from '../../config';
+import { SCREENS } from '../../../constants';
+import { API_BASE_URL } from '../../../config';
 
 // buildApiRequestBody関数は変更なしなので、そのまま使用します
 function buildApiRequestBody(inputJson, studentId) {

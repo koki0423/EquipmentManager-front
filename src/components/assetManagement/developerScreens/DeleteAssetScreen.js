@@ -6,7 +6,7 @@ import {
     DialogTitle, DialogContent, DialogActions, TextField
 } from '@mui/material';
 import BuildRoundedIcon from '@mui/icons-material/BuildRounded';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL } from '../../../config';
 
 function DeleteAssetScreen({ setScreen }) {
     const [assets, setAssets] = useState([]);

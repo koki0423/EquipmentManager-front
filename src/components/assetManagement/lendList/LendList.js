@@ -7,8 +7,8 @@ import {
 } from '@mui/material';
 import AssignmentReturnRoundedIcon from '@mui/icons-material/AssignmentReturnRounded';
 import { format } from 'date-fns';
-import { API_BASE_URL } from '../../config';
-import { SCREENS } from '../../constants';
+import { API_BASE_URL } from '../../../config';
+import { SCREENS } from '../../../constants';
 
 function LendListScreen({ setScreen }) {
     const [lendings, setLendings] = useState([]);
@@ -125,7 +125,7 @@ function LendListScreen({ setScreen }) {
                 )}
 
                 <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-                    <Button variant="outlined" onClick={() => setScreen(SCREENS.MENU_SCREEN)} sx={{ borderRadius: 3, px: 4, fontWeight: 600 }}>
+                    <Button variant="outlined" onClick={() => setScreen(SCREENS.ASSET_MENU)} sx={{ borderRadius: 3, px: 4, fontWeight: 600 }}>
                         戻る
                     </Button>
                 </Stack>

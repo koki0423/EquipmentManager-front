@@ -8,7 +8,7 @@ import {
     Box,
 } from '@mui/material';
 import BuildRoundedIcon from '@mui/icons-material/BuildRounded';
-import { SCREENS } from '../constants';
+import { SCREENS } from '../../constants';
 
 const DeveloperTopScreen = ({ setScreen }) => {
     // スクロール禁止

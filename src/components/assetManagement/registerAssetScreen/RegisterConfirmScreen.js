@@ -11,7 +11,7 @@ import {
     Box,
 } from '@mui/material';
 import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
-import { SCREENS } from '../../constants';
+import { SCREENS } from '../../../constants';
 
 const genreList = ['個人', '事務', 'ファシリティ', '組込みシステム', '高度情報演習'];
 const RegisterConfirmScreen = ({ inputJson, setScreen }) => {

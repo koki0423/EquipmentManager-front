@@ -9,6 +9,8 @@ export const SCREENS = {
   ASSET_LIST: 'asset_list',
   LEND_LIST: 'lend_list',
   MENU_SCREEN: 'menu_screen',
+  ASSET_MENU: 'asset_menu',
+  AUTH_SCREEN: 'auth_screen',
 };
 
 // 初期フォームデータ
