@@ -1,25 +1,41 @@
+import { useCallback } from 'react';
+import { Box, Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { NfcReaderUI } from './NfcReaderUI';
 import { SCREENS } from '../constants';
 import toast from 'react-hot-toast';
 
-const AuthScreen = ({ setScreen, setAuthInfo }) => {
-
-    const handleLogin = (id) => {
+const AuthScreen = ({ setScreen, setAuthInfo, nextScreen, setNextScreen }) => {
+    const handleLogin = useCallback((id) => {
         toast.success(`ようこそ、${id}さん！`);
-        // 1.5秒後にメニュー画面へ遷移
+
+        setAuthInfo({ studentId: id });
+
         setTimeout(() => {
-            // 親コンポーネントに認証情報を渡す
-            setAuthInfo({ studentId: id });
-            // メニュー画面へ遷移
-            setScreen(SCREENS.MENU_SCREEN);
+            setScreen(nextScreen || 'TopScreen');
+            setNextScreen(null);
         }, 1500);
+    }, [setAuthInfo, setScreen, nextScreen, setNextScreen]);
+
+    const handleBackToTop = () => {
+        setNextScreen(null);
+        setScreen(SCREENS.TOP);
     };
 
     return (
         <NfcReaderUI
-            title="備品管理システム"
-            description="学生証をリーダーにかざしてください"
+            title="学生証認証"
+            description="操作を続けるには学生証をかざしてください"
             onScanSuccess={handleLogin}
+            footerActions={
+                <Button
+                    variant="outlined"
+                    onClick={handleBackToTop}
+                    startIcon={<ArrowBackIcon />}
+                >
+                    TOPへ戻る
+                </Button>
+            }
         />
     );
 };

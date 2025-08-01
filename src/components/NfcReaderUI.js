@@ -1,9 +1,9 @@
-import { Button, Typography, Card, CircularProgress, Box, Fade, Stack } from '@mui/material';
+import { Button, Typography, Card, CircularProgress, Box, Fade, Stack, CardActions } from '@mui/material';
 import { CheckCircle, NfcRounded } from '@mui/icons-material';
 import { useNfcReader } from '../nfc/useNfcReader';
 import { useEffect, useState } from 'react';
 
-export const NfcReaderUI = ({ title, description, onScanSuccess }) => {
+export const NfcReaderUI = ({ title, description, onScanSuccess, footerActions }) => {
     const [isScanning, setIsScanning] = useState(false);
     const { studentId, error, reset } = useNfcReader(isScanning, setIsScanning);
 
@@ -32,11 +32,11 @@ export const NfcReaderUI = ({ title, description, onScanSuccess }) => {
                         <CircularProgress />
                     ) : studentId ? (
                         <Fade in={true}>
-                           <Box>
-                               <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
-                               <Typography color="text.secondary">認証が完了しました</Typography>
-                               <Typography variant="h4" sx={{ fontWeight: 700 }}>{studentId}</Typography>
-                           </Box>
+                            <Box>
+                                <CheckCircle sx={{ fontSize: 48, color: 'success.main', mb: 1 }} />
+                                <Typography color="text.secondary">認証が完了しました</Typography>
+                                <Typography variant="h4" sx={{ fontWeight: 700 }}>{studentId}</Typography>
+                            </Box>
                         </Fade>
                     ) : (
                         <Button variant="contained" size="large" onClick={handleStartScan} sx={{ minWidth: 300 }}>
@@ -45,7 +45,12 @@ export const NfcReaderUI = ({ title, description, onScanSuccess }) => {
                         </Button>
                     )}
                 </Box>
-                 <Typography color="error" sx={{ minHeight: 24, mt: 1 }}>{error || ' '}</Typography>
+                <Typography color="error" sx={{ minHeight: 24, mt: 1 }}>{error || ' '}</Typography>
+                {footerActions && (
+                    <CardActions sx={{ justifyContent: 'center', pt: 2, mt: 1, borderTop: '1px solid #e0e3e7' }}>
+                        {footerActions}
+                    </CardActions>
+                )}
             </Card>
         </Box>
     );

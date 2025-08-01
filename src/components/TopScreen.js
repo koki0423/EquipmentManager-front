@@ -11,9 +11,6 @@ import {
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import { SCREENS } from '../constants';
 
-const REQUIRED_CLICKS = 7;
-const CLICK_TIMEOUT = 1000;
-
 const TopScreen = ({ setScreen, setNextScreen }) => {
     // スクロール禁止
     useEffect(() => {
@@ -23,7 +20,6 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
         };
     }, []);
 
-    const [clickCount, setClickCount] = useState(0);
     const timeoutRef = useRef(null);
 
     useEffect(() => {
@@ -34,23 +30,6 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
         };
     }, []);
 
-    const handleIconClick = () => {
-        if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-        }
-
-        const newClickCount = clickCount + 1;
-        setClickCount(newClickCount);
-
-        if (newClickCount >= REQUIRED_CLICKS) {
-            setClickCount(0);
-            setScreen(SCREENS.DEVELOPER_TOP);
-        } else {
-            timeoutRef.current = setTimeout(() => {
-                setClickCount(0);
-            }, CLICK_TIMEOUT);
-        }
-    };
 
     const handleNavigate = (targetScreen) => {
         setNextScreen(targetScreen); // 行き先をApp.jsに保存
@@ -83,7 +62,6 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                     <Box sx={{ mb: 2 }}>
                         <Inventory2RoundedIcon
                             sx={{ fontSize: 48, color: 'primary.main' }}
-                            onClick={handleIconClick}
                         />
                     </Box>
                     <Typography
@@ -106,7 +84,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                         <Button
                             variant="contained"
                             size="large"
-                            //onClick={() => setScreen(SCREENS.REGISTER_FORM)}
+                            onClick={() => handleNavigate(SCREENS.ATTENDANCE)}
                             fullWidth
                             sx={{
                                 borderRadius: 3,
@@ -123,7 +101,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                         <Button
                             variant="contained"
                             size="large"
-                            onClick={() => setScreen(SCREENS.ASSET_MENU)}
+                            onClick={() => handleNavigate(SCREENS.ASSET_MENU)}
                             fullWidth
                             sx={{
                                 borderRadius: 3,

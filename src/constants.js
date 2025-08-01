@@ -11,6 +11,8 @@ export const SCREENS = {
   MENU_SCREEN: 'menu_screen',
   ASSET_MENU: 'asset_menu',
   AUTH_SCREEN: 'auth_screen',
+  ATTENDANCE: 'attendance',
+  ATTENDANCE_HISTORY: 'attendance_history',
 };
 
 // 初期フォームデータ

@@ -14,7 +14,7 @@ import { SCREENS } from '../../constants';
 const REQUIRED_CLICKS = 7;
 const CLICK_TIMEOUT = 1000;
 
-const AssetMenuScreen = ({ setScreen }) => {
+const AssetMenuScreen = ({ setScreen, authInfo }) => {
     // スクロール禁止
     useEffect(() => {
         document.body.style.overflow = 'hidden';
