@@ -1,4 +1,4 @@
-import { Button, Typography, Card, CircularProgress, Box, Fade, Stack, CardActions } from '@mui/material';
+import { Button, Typography, Card, CircularProgress, Box, Fade, CardActions } from '@mui/material';
 import { CheckCircle, NfcRounded } from '@mui/icons-material';
 import { useNfcReader } from '../nfc/useNfcReader';
 import { useEffect, useState } from 'react';

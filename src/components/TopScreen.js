@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
     Button,
     Typography,
@@ -73,7 +73,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                             borderBottom: '2px solid #e0e3e7'
                         }}
                     >
-                        研究室統合管理システム
+                        研究室統合管理システム v1.0
                     </Typography>
                     <Typography sx={{ mb: 1, mt: 1 }} color="text.secondary">
                         操作には学生証が必要です
@@ -96,7 +96,23 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                                 transition: 'all 0.2s',
                             }}
                         >
-                            出席
+                            出席打刻！
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={() => setScreen(SCREENS.TODAYS_ATTENDANCE)}
+                            sx={{
+                                borderRadius: 3,
+                                px: 4,
+                                minWidth: 300,
+                                fontWeight: 600,
+                                fontSize: '1.1rem',
+                                boxShadow: 3,
+                                transition: 'all 0.2s',
+                            }}
+                        >
+                            今日の出席状況
                         </Button>
                         <Button
                             variant="contained"

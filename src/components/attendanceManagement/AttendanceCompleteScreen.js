@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, toast } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import { Box, Card, Typography, Button, Stack, Chip, LinearProgress, CircularProgress, } from '@mui/material';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { format } from 'date-fns';
@@ -57,8 +58,6 @@ const AttendanceCompleteScreen = ({ setScreen, authInfo }) => {
         if (!timestamp) return 'ようこそ！';
         return getGreeting(timestamp);
     }, [timestamp]);
-
-
 
     const handleBackToTop = () => {
         setScreen(SCREENS.TOP);

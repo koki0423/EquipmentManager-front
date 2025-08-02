@@ -13,6 +13,7 @@ export const SCREENS = {
   AUTH_SCREEN: 'auth_screen',
   ATTENDANCE: 'attendance',
   ATTENDANCE_HISTORY: 'attendance_history',
+  TODAYS_ATTENDANCE: 'todays_attendance',
 };
 
 // 初期フォームデータ

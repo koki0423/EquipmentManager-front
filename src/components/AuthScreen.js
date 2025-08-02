@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { NfcReaderUI } from './NfcReaderUI';
 import { SCREENS } from '../constants';
