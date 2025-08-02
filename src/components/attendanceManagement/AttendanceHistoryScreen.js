@@ -6,15 +6,21 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ja } from 'date-fns/locale';
 import { format, isSameDay, getHours, getMinutes } from 'date-fns';
 
-import { useAttendance } from './useAttendance'; // 作成したカスタムフックをインポート
+import { useAttendance } from './useAttendance';
 import { SCREENS } from '../../constants';
 
-// --- 表示用コンポーネント (責務がUI表示のみなので、このファイルに置いても良い) ---
+// --- 表示用コンポーネント ---
 const BadgeDay = (props) => {
     const { day, highlightedDays, ...other } = props;
     const hasAttendance = highlightedDays.has(format(day, 'yyyy-MM-dd'));
     return (
-        <Badge key={day.toString()} overlap="circular" variant="dot" color="primary" invisible={!hasAttendance}>
+        <Badge
+            key={day.toString()}
+            overlap="circular"
+            variant="dot"
+            color="primary"
+            invisible={!hasAttendance} // highlightedDaysに含まれない日はバッジを非表示
+        >
             <PickersDay {...other} day={day} />
         </Badge>
     );
