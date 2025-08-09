@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
   Button,
   Typography,
@@ -10,7 +9,7 @@ import {
   Box,
   Autocomplete,
 } from '@mui/material';
-import { SCREENS } from '../../constants';
+import { SCREENS } from '../../../constants';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 
 const RegisterFormScreen = ({ formData, setFormData, setInputJson, setScreen }) => {
@@ -275,7 +274,7 @@ const RegisterFormScreen = ({ formData, setFormData, setInputJson, setScreen }) 
           <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 2 }}>
             <Button
               variant="outlined"
-              onClick={() => setScreen(SCREENS.MENU_SCREEN)}
+              onClick={() => setScreen(SCREENS.ASSET_MENU)}
               sx={{
                 borderRadius: 3,
                 px: 4,

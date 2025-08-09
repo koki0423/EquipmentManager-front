@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import {
     Typography, Card, CircularProgress, Box
 } from '@mui/material';
-import { SCREENS } from '../../constants';
-import { API_BASE_URL } from '../../config';
+import { SCREENS } from '../../../constants';
+import { API_BASE_URL } from '../../../config';
+import { PRINT_API_URL } from '../../../config';
 
-// buildApiRequestBody関数は変更なしなので、そのまま使用します
 function buildApiRequestBody(inputJson, studentId) {
     const nowDate = new Date().toISOString().slice(0, 10);
     return {
@@ -27,7 +27,47 @@ function buildApiRequestBody(inputJson, studentId) {
     }
 }
 
-const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo }) => {
+async function PrintLabel(inputJson, managementNumber, width, type) {
+    const genreList = ['個人', '事務', 'ファシリティ', '組込みシステム', '高度情報演習'];
+    const genreName = genreList[inputJson.genre_id - 1] || '未入力';
+
+    const printJsonRequest = {
+        config: {
+            use_halfcut: true,
+            confirm_tape_width: false,
+            enable_print_log: true
+        },
+        label: {
+            checked: true,
+            col_b: inputJson.name,
+            col_c: genreName,
+            col_d: managementNumber,
+            col_e: managementNumber
+        },
+        width: width,
+        type: type
+    }
+
+    try {
+        const res = await fetch(`${PRINT_API_URL}/print`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(printJsonRequest),
+        });
+
+        if (!res.ok) {
+            throw new Error('印刷サーバーでエラーが発生しました。');
+        }
+
+        console.log('印刷成功');
+
+    } catch (e) {
+        console.error('印刷失敗:', e);
+        alert('印刷に失敗しました。');
+    }
+}
+
+const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo, tapeWidth, codeType }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -39,9 +79,7 @@ const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo }) => {
         };
     }, []);
 
-    // この画面が表示されたら、一度だけ実行する
     useEffect(() => {
-        // authInfo や inputJson がなければ処理を中断
         if (!authInfo?.studentId || !inputJson) {
             setError('登録情報が不足しています。');
             setIsLoading(false);
@@ -52,7 +90,6 @@ const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo }) => {
             setIsLoading(true);
             setError(null);
 
-            // propsから受け取ったauthInfo.studentIdを直接使う
             const requestBody = buildApiRequestBody(inputJson, authInfo.studentId);
 
             try {
@@ -66,7 +103,11 @@ const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo }) => {
                     const errorData = await res.json();
                     throw new Error(errorData.message || 'サーバーでエラーが発生しました。');
                 }
-                
+
+                const resJson = await res.json();
+                console.log('印刷ジョブ:', resJson['management_number'], tapeWidth, codeType);
+                PrintLabel(inputJson, resJson['management_number'], tapeWidth, codeType);
+
                 // 成功したら完了画面へ
                 setScreen(SCREENS.COMPLETE);
 
@@ -78,8 +119,7 @@ const RegisterExecuteScreen = ({ inputJson, setScreen, authInfo }) => {
         };
 
         executeRegistration();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []); // 空の依存配列で、初回レンダリング時に一度だけ実行
+    }, []);
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100dvh', bgcolor: '#f6f8fb' }}>

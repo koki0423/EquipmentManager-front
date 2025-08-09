@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Button,
     Typography,
@@ -9,9 +9,12 @@ import {
     Box
 } from '@mui/material';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
-import { SCREENS } from '../constants';
+import { SCREENS } from '../../constants';
 
-const TopScreen = ({ setScreen, setNextScreen }) => {
+const REQUIRED_CLICKS = 7;
+const CLICK_TIMEOUT = 1000;
+
+const AssetMenuScreen = ({ setScreen, authInfo }) => {
     // スクロール禁止
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -20,6 +23,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
         };
     }, []);
 
+    const [clickCount, setClickCount] = useState(0);
     const timeoutRef = useRef(null);
 
     useEffect(() => {
@@ -30,10 +34,22 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
         };
     }, []);
 
+    const handleIconClick = () => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
 
-    const handleNavigate = (targetScreen) => {
-        setNextScreen(targetScreen); // 行き先をApp.jsに保存
-        setScreen(SCREENS.AUTH_SCREEN);     // 認証画面へ遷移
+        const newClickCount = clickCount + 1;
+        setClickCount(newClickCount);
+
+        if (newClickCount >= REQUIRED_CLICKS) {
+            setClickCount(0);
+            setScreen(SCREENS.DEVELOPER_TOP);
+        } else {
+            timeoutRef.current = setTimeout(() => {
+                setClickCount(0);
+            }, CLICK_TIMEOUT);
+        }
     };
 
     return (
@@ -62,6 +78,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                     <Box sx={{ mb: 2 }}>
                         <Inventory2RoundedIcon
                             sx={{ fontSize: 48, color: 'primary.main' }}
+                            onClick={handleIconClick}
                         />
                     </Box>
                     <Typography
@@ -73,10 +90,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                             borderBottom: '2px solid #e0e3e7'
                         }}
                     >
-                        研究室統合管理システム v1.0
-                    </Typography>
-                    <Typography sx={{ mb: 1, mt: 1 }} color="text.secondary">
-                        操作には学生証が必要です
+                        備品管理システム
                     </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', mt: 1 }}>
@@ -84,7 +98,7 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                         <Button
                             variant="contained"
                             size="large"
-                            onClick={() => handleNavigate(SCREENS.ATTENDANCE)}
+                            onClick={() => setScreen(SCREENS.REGISTER_FORM)}
                             fullWidth
                             sx={{
                                 borderRadius: 3,
@@ -96,28 +110,12 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                                 transition: 'all 0.2s',
                             }}
                         >
-                            出席打刻！
+                            登録
                         </Button>
                         <Button
                             variant="contained"
                             size="large"
-                            onClick={() => setScreen(SCREENS.TODAYS_ATTENDANCE)}
-                            sx={{
-                                borderRadius: 3,
-                                px: 4,
-                                minWidth: 300,
-                                fontWeight: 600,
-                                fontSize: '1.1rem',
-                                boxShadow: 3,
-                                transition: 'all 0.2s',
-                            }}
-                        >
-                            今日の出席状況
-                        </Button>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            onClick={() => handleNavigate(SCREENS.ASSET_MENU)}
+                            onClick={() => setScreen(SCREENS.ASSET_LIST)}
                             fullWidth
                             sx={{
                                 borderRadius: 3,
@@ -129,7 +127,40 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
                                 transition: 'all 0.2s',
                             }}
                         >
-                            備品管理
+                            備品一覧
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={() => setScreen(SCREENS.LEND_LIST)}
+                            fullWidth
+                            sx={{
+                                borderRadius: 3,
+                                px: 4,
+                                minWidth: 300,
+                                fontWeight: 600,
+                                fontSize: '1.1rem',
+                                boxShadow: 3,
+                                transition: 'all 0.2s',
+                            }}
+                        >
+                            貸出一覧
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setScreen(SCREENS.MENU_SCREEN)}
+                            sx={{
+                                borderRadius: 3,
+                                px: 4,
+                                fontWeight: 600,
+                                fontSize: '1.05rem',
+                                color: 'primary.main',
+                                borderColor: 'primary.main',
+                                bgcolor: 'white',
+                                '&:hover': { bgcolor: '#f1f7fb', borderColor: 'primary.dark' },
+                            }}
+                        >
+                            戻る
                         </Button>
                     </Stack>
                 </CardActions>
@@ -138,4 +169,4 @@ const TopScreen = ({ setScreen, setNextScreen }) => {
     );
 };
 
-export default TopScreen;
+export default AssetMenuScreen;

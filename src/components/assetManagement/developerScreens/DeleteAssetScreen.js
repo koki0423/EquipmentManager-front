@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Box, Card, Typography, Table, TableHead, TableRow, TableCell,
     TableBody, TableContainer, Paper, Button, Stack, Dialog,
-    DialogTitle, DialogContent, DialogActions, TextField
+    DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import BuildRoundedIcon from '@mui/icons-material/BuildRounded';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL } from '../../../config';
 
 function DeleteAssetScreen({ setScreen }) {
     const [assets, setAssets] = useState([]);

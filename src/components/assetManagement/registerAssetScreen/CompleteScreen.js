@@ -5,10 +5,11 @@ import {
     Box,
 } from '@mui/material';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import { SCREENS } from '../../constants';
+import { SCREENS } from '../../../constants';
 
 const CompleteScreen = ({ setScreen }) => {
     const [countdown, setCountdown] = useState(5);
+
     // スクロール禁止
     useEffect(() => {
         document.body.style.overflow = 'hidden';
