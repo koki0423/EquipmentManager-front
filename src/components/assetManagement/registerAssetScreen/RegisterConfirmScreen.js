@@ -1,3 +1,4 @@
+import React from 'react'; // ReactとuseStateをインポート
 import { format } from 'date-fns/format';
 import {
     Button,
@@ -8,12 +9,24 @@ import {
     ListItem,
     ListItemText,
     Box,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
 } from '@mui/material';
 import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
 import { SCREENS } from '../../../constants';
 
 const genreList = ['個人', '事務', 'ファシリティ', '組込みシステム', '高度情報演習'];
-const RegisterConfirmScreen = ({ inputJson, setScreen }) => {
+const RegisterConfirmScreen = ({
+    inputJson,
+    setScreen,
+    tapeWidth,
+    setTapeWidth,
+    codeType,
+    setCodeType
+}) => {
     return (
         <Box
             sx={{
@@ -110,13 +123,13 @@ const RegisterConfirmScreen = ({ inputJson, setScreen }) => {
                         />
                     </ListItem>
                     <ListItem>
-                            <ListItemText
-                                primary="保管場所（所有者）"
-                                secondary={inputJson?.default_location || '未入力'}
-                                primaryTypographyProps={{ fontWeight: 700, fontSize: '1.1rem' }}
-                                secondaryTypographyProps={{ fontWeight: 600, fontSize: '1.08rem' }}
-                            />
-                        </ListItem>
+                        <ListItemText
+                            primary="保管場所（所有者）"
+                            secondary={inputJson?.default_location || '未入力'}
+                            primaryTypographyProps={{ fontWeight: 700, fontSize: '1.1rem' }}
+                            secondaryTypographyProps={{ fontWeight: 600, fontSize: '1.08rem' }}
+                        />
+                    </ListItem>
                     <ListItem>
                         <ListItemText
                             primary="購入日"
@@ -138,6 +151,40 @@ const RegisterConfirmScreen = ({ inputJson, setScreen }) => {
                         />
                     </ListItem>
                 </List>
+                <Stack spacing={2} sx={{ my: 3, alignItems: 'center' }}>
+                    <FormControl>
+                        <FormLabel id="tape-width-label" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
+                            テープ幅
+                        </FormLabel>
+                        <RadioGroup
+                            row
+                            aria-labelledby="tape-width-label"
+                            name="tape-width-group"
+                            value={tapeWidth}
+                            onChange={(event) => setTapeWidth(event.target.value)}
+                        >
+                            <FormControlLabel value="9" control={<Radio />} label="9mm" />
+                            <FormControlLabel value="12" control={<Radio />} label="12mm" />
+                            <FormControlLabel value="18" control={<Radio />} label="18mm" />
+                        </RadioGroup>
+                    </FormControl>
+
+                    <FormControl>
+                        <FormLabel id="code-type-label" sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>
+                            バーコード種類
+                        </FormLabel>
+                        <RadioGroup
+                            row
+                            aria-labelledby="code-type-label"
+                            name="code-type-group"
+                            value={codeType}
+                            onChange={(event) => setCodeType(event.target.value)}
+                        >
+                            <FormControlLabel value="qr" control={<Radio />} label="QRコード" />
+                            <FormControlLabel value="code128" control={<Radio />} label="バーコード" />
+                        </RadioGroup>
+                    </FormControl>
+                </Stack>
                 <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 2 }}>
                     <Button
                         variant="outlined"

@@ -29,6 +29,11 @@ function App() {
   const [nextScreen, setNextScreen] = useState(null);
   const [_timestamp, setTimestamp] = useState(new Date());
 
+  // テープ幅とコードタイプ
+  const [tapeWidth, setTapeWidth] = useState('12');// デフォルト値を12mmに設定
+  const [codeType, setCodeType] = useState('qr');   // デフォルト値をQRコードに設定
+
+
   // TOPに戻ったときにフォームデータをリセットする
   // useEffect(実行したい処理, [監視対象のリスト]);
   useEffect(() => {
@@ -79,9 +84,24 @@ function App() {
           authInfo={authInfo}
         />;
       case SCREENS.REGISTER_CONFIRM:
-        return <RegisterConfirmScreen inputJson={inputJson} setScreen={setScreen} authInfo={authInfo} />;
+        return <RegisterConfirmScreen
+          inputJson={inputJson}
+          setScreen={setScreen}
+          authInfo={authInfo}
+          tapeWidth={tapeWidth}
+          setTapeWidth={setTapeWidth}
+          codeType={codeType}
+          setCodeType={setCodeType}
+        />;
       case SCREENS.REGISTER_EXECUTE:
-        return <RegisterExecuteScreen inputJson={inputJson} setScreen={setScreen} authInfo={authInfo} />;
+        return <RegisterExecuteScreen
+          inputJson={inputJson}
+          setScreen={setScreen}
+          authInfo={authInfo}
+          tapeWidth={tapeWidth}
+          codeType={codeType}
+
+        />;
       case SCREENS.COMPLETE:
         return <CompleteScreen setScreen={setScreen} />;
       default:

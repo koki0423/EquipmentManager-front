@@ -9,6 +9,7 @@ import { SCREENS } from '../../../constants';
 
 const CompleteScreen = ({ setScreen }) => {
     const [countdown, setCountdown] = useState(5);
+
     // スクロール禁止
     useEffect(() => {
         document.body.style.overflow = 'hidden';
