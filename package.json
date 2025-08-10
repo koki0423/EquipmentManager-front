@@ -1,5 +1,5 @@
 {
-  "name": "LIMS-front",
+  "name": "lims-front",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
