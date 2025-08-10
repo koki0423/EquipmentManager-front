@@ -81,7 +81,7 @@ const AttendanceCompleteScreen = ({ setScreen, authInfo }) => {
                     timestamp: jstISOStringWithTZ,
                     student_number: authInfo.studentId,
                 };
-                const response = await fetch(`${API_BASE_URL}/api/v1/attendances`, {
+                const response = await fetch(`${API_BASE_URL}/api/v1/attend`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),

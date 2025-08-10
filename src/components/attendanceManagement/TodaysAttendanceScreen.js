@@ -63,8 +63,6 @@ const TodaysAttendanceScreen = ({ setScreen, authInfo }) => {
                                 <Typography variant="h6" component="h1">
                                     {record.student_number}
                                 </Typography>
-                                {/* APIが名前を返すならここに表示 */}
-                                {/* <Typography>山田 太郎</Typography> */}
                             </Paper>
                         </TimelineContent>
                     </TimelineItem>
